@@ -39,7 +39,7 @@ Continuously improving. Currently supports the following common configurations
 - Video buffer
 - Receiver (v4l2) buffer
 
-## Device Control
+## Device
 
 - Show touch points
 - Keep awake
@@ -48,7 +48,7 @@ Continuously improving. Currently supports the following common configurations
 - Disable auto screen on during control
 - Simulate auxiliary display
 
-## Window Control
+## Window
 
 - Window width
 - Window height
@@ -59,7 +59,7 @@ Continuously improving. Currently supports the following common configurations
 - Always on top
 - Disable screensaver
 
-## Audio Control
+## Audio
 
 - Disable audio forwarding
 - Keep device audio
@@ -69,7 +69,7 @@ Continuously improving. Currently supports the following common configurations
 - Audio buffer
 - Audio output buffer
 
-## Audio/Video Recording
+## Recording
 
 - Record video format
 - Record video orientation
@@ -77,7 +77,7 @@ Continuously improving. Currently supports the following common configurations
 - Disable video playback
 - Disable audio playback
 
-## Input Control
+## Input
 
 - Mouse mode
 - Mouse binding
@@ -85,7 +85,7 @@ Continuously improving. Currently supports the following common configurations
 - Keyboard injection method
 - Gamepad
 
-## Camera Control
+## Camera
 
 - Camera source
 - Camera size

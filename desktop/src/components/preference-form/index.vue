@@ -76,7 +76,7 @@
                       v-bind="{
                         preferenceData,
                         deviceScope,
-                        title: $t(item_1.placeholder),
+                        title: getTitle(item_1),
                         placeholder: $t(item_1.placeholder),
                         data: item_1,
                       }"
@@ -168,6 +168,18 @@ if (preferenceModelKeys.length) {
   collapseValue.value = preferenceModelKeys
 }
 
+function getTitle(item) {
+  if (item.options?.length) {
+    const currentOption = item.options.find(option => option.value === preferenceData.value[item.field])
+
+    if (currentOption) {
+      return window.t(currentOption.placeholder || currentOption.label)
+    }
+  }
+
+  return window.t(item.placeholder || item.label)
+}
+
 async function onTabChange(val) {
   observerLock.value = true
 
@@ -211,9 +223,9 @@ function handleReset(type) {
 
 async function generateCommand() {
   const value = await preferenceStore.scrcpyParameter(preferenceData.value, {
-    isRecord: true,
-    isCamera: true,
-    isOtg: true,
+    useRecord: true,
+    useCamera: true,
+    useOtg: true,
   })
 
   return value

@@ -47,7 +47,7 @@ export default {
           '--stay-awake',
           '--show-touches',
         ],
-        isOtg: true,
+        useOtg: true,
       })}`
 
       try {

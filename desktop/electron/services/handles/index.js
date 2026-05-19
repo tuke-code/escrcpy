@@ -167,26 +167,6 @@ export default {
       }
     })
 
-    /**
-     * Retrieve a temporary Gitee access token
-     */
-    ipcMain.handle('get-gitee-temporary-token', async (_, params) => {
-      const response = await fetch(`${import.meta.env.VITE_GITEE_BASE_API}/tokens/temporary`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_GITEE_APP_TOKEN}`,
-        },
-        body: JSON.stringify({
-          seconds: params?.seconds ?? 7,
-        }),
-      })
-
-      const data = await response.json()
-
-      return data.token
-    })
-
     ipcMain.handle('open-system-menu', (event, args = {}) => {
       const win = BrowserWindow.fromWebContents(event.sender)
 
@@ -232,7 +212,6 @@ export default {
       ipcMain.removeHandler('rename-temp-file')
       ipcMain.removeHandler('navigate-to-route')
       ipcMain.removeHandler('open-log-path')
-      ipcMain.removeHandler('get-gitee-temporary-token')
       ipcMain.removeHandler('open-system-menu')
     }
   },

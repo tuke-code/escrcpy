@@ -22,7 +22,7 @@ export default {
   props: {
     modelValue: {
       type: String,
-      value: '',
+      default: '',
     },
     data: {
       type: Object,
@@ -30,7 +30,7 @@ export default {
     },
     deviceScope: {
       type: String,
-      value: '',
+      default: '',
     },
     preferenceData: {
       type: Object,

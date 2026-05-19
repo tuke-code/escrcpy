@@ -1,5 +1,44 @@
 # Changelog
 
+## [2.11.1](https://github.com/viarotel/escrcpy-x/compare/v2.11.0...v2.11.1) (2026-05-19)
+
+
+### Bug Fixes
+
+* 🐛 Fixed the issue where mouse mapping cannot be triggered simultaneously when multiple components exist ([35a6b66](https://github.com/viarotel/escrcpy-x/commit/35a6b66ba7a844a10eddb729a16b94226c70d98a))
+
+
+### Performance Improvements
+
+* 🚀 Solve the problem that binary dependency caching may cause program anomalies after version upgrades ([3032a91](https://github.com/viarotel/escrcpy-x/commit/3032a917c77b3b1721975671e1e26f877759f9aa))
+
+
+### Code Refactoring
+
+* ➖ Removed redundant option for keyboard mapping perspective control ([47090e0](https://github.com/viarotel/escrcpy-x/commit/47090e02ed588305b8d1c6e1356a7defdd6bd63b))
+* 🚀 Keyboard mapping and viewing angle control function reconstruction and optimization ([ae94ff3](https://github.com/viarotel/escrcpy-x/commit/ae94ff3fe0c27a14454b339cf75a7f1245ba653f))
+* 🚀 Update the sorting of dependency imports ([eea1077](https://github.com/viarotel/escrcpy-x/commit/eea10774ed0e75b14a73205088eb4913e34aedcd))
+
+## [2.11.0](https://github.com/viarotel/escrcpy-x/compare/v2.10.2...v2.11.0) (2026-05-15)
+
+
+### Features
+
+* ⚡️ Optimizations for enabling device application interaction include adding display presets ([d60bd6d](https://github.com/viarotel/escrcpy-x/commit/d60bd6d5ef8a9606986ee03303786b449b03d7b3))
+* 🚀 Update to scrcpy 4.0 ([85e9544](https://github.com/viarotel/escrcpy-x/commit/85e9544849e9c17486e286a475448535a441430c))
+
+
+### Bug Fixes
+
+* **keyboard:** align click hold behavior and improve view control ([83f7967](https://github.com/viarotel/escrcpy-x/commit/83f79678073d6df7b9023d9a2a01647d876e599a))
+
+
+### Code Refactoring
+
+* ➖ Remove redundant code ([51d8059](https://github.com/viarotel/escrcpy-x/commit/51d80597afe2cf60ef4bec2fb059c5d3756a2edc))
+* 👷 Optimize the preference interactive experience ([150ed9a](https://github.com/viarotel/escrcpy-x/commit/150ed9a7fed3b4db0311b214c7336f94cbe58511))
+* 🚀 Reconstruct the keyboard mapping module lifecycle skeleton to improve scalability ([9d1382b](https://github.com/viarotel/escrcpy-x/commit/9d1382bc60ee63c8fd5ec62ab1c729051d36b743))
+
 ## [2.10.2](https://github.com/viarotel/escrcpy-x/compare/v2.10.1...v2.10.2) (2026-05-12)
 
 

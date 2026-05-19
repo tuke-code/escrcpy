@@ -18,9 +18,12 @@ export const usePreferenceStore = defineStore('app-preference', () => {
   const cameraKeys = ref(Object.values(preferenceModel?.camera?.children || {}).map((item) => {
     return item.field
   }))
-  const otgKeys = ref(Object.values(preferenceModel?.otg?.children || {}).map((item) => {
+  const otgKeys = ref(['--otg', '--mouse=aoa', '--keyboard=aoa'])
+
+  const launchKeys = ref(Object.values(preferenceModel?.launch?.children || {}).map((item) => {
     return item.field
   }))
+
   const model = ref(cloneDeep(preferenceModel))
   const data = ref({ ...getDefaultData() })
   const scrcpyExcludeKeys = ref(getScrcpyExcludeKeys())
@@ -87,23 +90,29 @@ export const usePreferenceStore = defineStore('app-preference', () => {
     return value
   }
 
-  function scrcpyParameter(
-    scope = deviceScope.value,
-    { isRecord = false, isCamera = false, isOtg = false, excludes = [] } = {},
-  ) {
+  function scrcpyParameter(scope = deviceScope.value, options) {
+    const {
+      useRecord = false,
+      useCamera = false,
+      useOtg = false,
+      useLaunch = false,
+      excludes = [],
+    } = options || {}
+
     const dataToUse = typeof scope === 'object' ? scope : getData(scope)
     if (!dataToUse) {
       return ''
     }
+
     const params = Object.entries(dataToUse).reduce((obj, [key, value]) => {
       const shouldExclude
         = (!value && typeof value !== 'number')
           || scrcpyExcludeKeys.value.includes(key)
-          || (!isRecord && recordKeys.value.includes(key))
-          || (!isCamera && cameraKeys.value.includes(key))
-          || (!isOtg && otgKeys.value.includes(key))
-          || excludes.includes(key)
-          || excludes.includes(`${key}=${value}`)
+          || [key, `${key}=${value}`].some(v => excludes.includes(v))
+          || (!useRecord && recordKeys.value.includes(key))
+          || (!useCamera && cameraKeys.value.includes(key))
+          || (!useOtg && [key, `${key}=${value}`].some(v => otgKeys.value.includes(v)))
+          || (!useLaunch && launchKeys.value.includes(key))
 
       if (!shouldExclude) {
         obj[key] = value
@@ -116,6 +125,11 @@ export const usePreferenceStore = defineStore('app-preference', () => {
 
       return obj
     }, {})
+
+    if (params['--flex-display']) {
+      delete params['--window-width']
+      delete params['--window-height']
+    }
 
     let value = command.stringify(params)
     if (dataToUse.scrcpyAppend) {

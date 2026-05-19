@@ -1,5 +1,3 @@
-import electronStore from '$electron/helpers/store/index.js'
-
 /**
  * Parse scrcpy app list output into structured data
  * @param {string} rawText - Raw text output from scrcpy --list-apps command
@@ -30,18 +28,6 @@ export function parseScrcpyAppList(rawText) {
         isSystemApp,
       }
     })
-}
-
-/**
- * Get the --display-overlay value
- * @param {*} serial
- * @returns {string}
- */
-export function getDisplayOverlay(serial) {
-  const value = electronStore.get('scrcpy')?.[serial]?.['--display-overlay']
-    || electronStore.get('scrcpy.global.--display-overlay')
-    || ''
-  return value
 }
 
 /**
@@ -132,4 +118,79 @@ export function parseDisplayIds(text) {
     console.error('Error parsing display IDs:', error)
     return []
   }
+}
+
+/**
+ * @param {string} output
+ * @param {boolean} [dedupe] 是否去重；
+ * @returns {array[object]} 摄像头信息列表
+ */
+export function parseScrcpyCameras(output, options) {
+  const { dedupe = false } = options || {}
+
+  const cameraLineRE
+    = /^\s*--camera-id=(\S+)\s+\(([^,]+),\s*(\d+)x(\d+),\s*fps=\{([^}]*)\}(?:,\s*zoom-range=\[([^\]]+)\])?.*\)\s*$/
+
+  const cameras = []
+
+  const cameraMap = new Map()
+
+  for (const line of output.split(/\r?\n/)) {
+    const match = cameraLineRE.exec(line)
+    if (!match)
+      continue
+
+    const [, id, facingRaw, widthRaw, heightRaw, fpsRaw, zoomRaw] = match
+
+    const fps = fpsRaw
+      .split(',')
+      .map(v => Number(v.trim()))
+      .filter(Number.isFinite)
+
+    const camera = {
+      id,
+      facing: facingRaw || 'unknown',
+      width: Number(widthRaw),
+      height: Number(heightRaw),
+      fps,
+    }
+
+    if (zoomRaw) {
+      const zoom = zoomRaw
+        .split(',')
+        .map(v => Number(v.trim()))
+        .filter(Number.isFinite)
+
+      if (zoom.length === 2) {
+        camera.zoomRange = [zoom[0], zoom[1]]
+      }
+    }
+
+    if (!dedupe) {
+      cameras.push(camera)
+      continue
+    }
+
+    const dedupeKey = [
+      camera.facing,
+      camera.width,
+      camera.height,
+      camera.fps.join(','),
+    ].join('|')
+
+    const existing = cameraMap.get(dedupeKey)
+
+    const getZoomSpan = (zoomRange) => {
+      if (!zoomRange)
+        return 0
+
+      return zoomRange[1] - zoomRange[0]
+    }
+
+    if (!existing || getZoomSpan(camera.zoomRange) > getZoomSpan(existing.zoomRange)) {
+      cameraMap.set(dedupeKey, camera)
+    }
+  }
+
+  return dedupe ? [...cameraMap.values()] : cameras
 }

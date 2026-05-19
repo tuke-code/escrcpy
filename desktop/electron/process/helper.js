@@ -39,8 +39,6 @@ export function resolveEnvPath(options = {}) {
     return rawEnvPath
   }
 
-  // console.log('resolveEnvPath.platformPaths', platformPaths)
-
   return `${platformPaths.join(delimiter)}${delimiter}${rawEnvPath}`
 }
 
@@ -85,4 +83,9 @@ export function setupEnvPath() {
 
   // Ensure GNIREHTET_APK path is set in environment for subprocesses
   process.env.GNIREHTET_APK = gnirehtetApkPath
+
+  // Ensure SCRCPY_SERVER_PATH and SCRCPY_ICON_DIR are set for scrcpy to find its server and icons
+  const commonScrcpyDir = extraResolve('common/scrcpy')
+  process.env.SCRCPY_ICON_DIR = commonScrcpyDir
+  process.env.SCRCPY_SERVER_PATH = `${commonScrcpyDir}/scrcpy-server`
 }

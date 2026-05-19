@@ -1,11 +1,10 @@
 import { electronAPI } from '@electron-toolkit/preload'
-import electronStore from '$electron/helpers/store/index.js'
 import { sheller } from '$electron/helpers/shell/index.js'
 import commandHelper from '$renderer/utils/command/index.js'
 
 import { ProcessManager } from '$electron/process/manager.js'
 
-import { getDisplayOverlay, parseDisplayIds, parseScrcpyAppList, parseScrcpyCodecList } from './helper.js'
+import { parseDisplayIds, parseScrcpyAppList, parseScrcpyCameras, parseScrcpyCodecList } from './helper.js'
 
 const processManager = new ProcessManager()
 
@@ -13,8 +12,15 @@ electronAPI.ipcRenderer.on('quit-before', () => {
   processManager.kill()
 })
 
-async function shell(command, options = {}) {
-  const scrcpyProcess = sheller(`scrcpy ${command}`, {
+function normalizeScrcpyError(error) {
+  const message = error?.stderr || error?.message
+  throw new Error(message)
+}
+
+function createScrcpyProcess(command, options = {}) {
+  let scrcpyProcess = null
+
+  scrcpyProcess = sheller(`scrcpy ${command}`, {
     shell: true,
     encoding: 'utf8',
     ...options,
@@ -26,14 +32,31 @@ async function shell(command, options = {}) {
 
   processManager.add(scrcpyProcess)
 
-  return scrcpyProcess.catch((error) => {
-    const message = error?.stderr || error?.message
-    throw new Error(message)
+  const promise = scrcpyProcess.catch(normalizeScrcpyError)
+
+  return Object.assign(scrcpyProcess, {
+    then: promise.then.bind(promise),
+    catch: promise.catch.bind(promise),
+    finally: promise.finally.bind(promise),
   })
 }
 
+function createMirrorProcess(
+  serial,
+  { title, args = '', ...options } = {},
+) {
+  return createScrcpyProcess(
+    `--serial="${serial}" --window-title="${title}" ${args}`,
+    options,
+  )
+}
+
+async function shell(...args) {
+  return createScrcpyProcess(...args)
+}
+
 async function getEncoders(serial) {
-  const res = await shell(`--serial="${serial}" --list-encoders`)
+  const res = await createScrcpyProcess(`--serial="${serial}" --list-encoders`)
 
   const stdout = res.stdout
 
@@ -42,18 +65,12 @@ async function getEncoders(serial) {
   return value
 }
 
-async function mirror(
-  serial,
-  { title, args = '', ...options } = {},
-) {
-  return shell(
-    `--serial="${serial}" --window-title="${title}" ${args}`,
-    options,
-  )
+async function mirror(...args) {
+  return createMirrorProcess(...args)
 }
 
 async function record(serial, { title, args = '', savePath, ...options } = {}) {
-  return shell(
+  return createScrcpyProcess(
     `--serial="${serial}" --window-title="${title}" --record="${savePath}" ${args}`,
     options,
   )
@@ -66,14 +83,14 @@ async function helper(
 ) {
   const stringCommand = commandHelper.stringify(command)
 
-  return shell(
+  return createScrcpyProcess(
     `--serial="${serial}" --no-window --no-video --no-audio ${stringCommand}`,
     options,
   )
 }
 
 async function getAppList(serial) {
-  const res = await shell(`--serial="${serial}" --list-apps`)
+  const res = await createScrcpyProcess(`--serial="${serial}" --list-apps`)
 
   const stdout = res.stdout
 
@@ -83,7 +100,7 @@ async function getAppList(serial) {
 }
 
 async function getDisplayIds(serial) {
-  const res = await shell(`--serial="${serial}" --list-displays`)
+  const res = await createScrcpyProcess(`--serial="${serial}" --list-displays`)
 
   const stdout = res.stdout
 
@@ -92,33 +109,27 @@ async function getDisplayIds(serial) {
   return value
 }
 
+async function getCameraList(serial, options) {
+  const res = await createScrcpyProcess(`--serial="${serial}" --list-cameras`)
+
+  const stdout = res.stdout
+
+  const value = parseScrcpyCameras(stdout, options)
+
+  return value
+}
+
 async function launch(serial, args = {}) {
-  let { commands = '', packageName, useNewDisplay = true, newDisplay = '', ...options } = args
+  let { commands = '', packageName, useNewDisplay = true, newDisplay = '', landscape, ...options } = args
 
   if (useNewDisplay) {
     commands += newDisplay
       ? ` --new-display=${newDisplay}`
-      : ` --new-display`
+      : ' --new-display'
+  }
 
-    if (!newDisplay) {
-      const displayOverlay = getDisplayOverlay(serial)
-
-      if (displayOverlay) {
-        commands += `=${displayOverlay}`
-      }
-    }
-
-    const imeFix = electronStore.get('common.imeFix')
-
-    if (imeFix) {
-      commands += ` --display-ime-policy=local`
-    }
-
-    const noVdDestroyContent = electronStore.get('common.noVdDestroyContent')
-
-    if (noVdDestroyContent) {
-      commands += ` --no-vd-destroy-content`
-    }
+  if (landscape || !useNewDisplay) {
+    commands = commands.replace(/\s*--flex-display\s*/g, ' ')
   }
 
   if (packageName && !['unknown'].includes(packageName)) {
@@ -131,7 +142,7 @@ async function launch(serial, args = {}) {
 
   const signalText = /New display:.+?\(id=(\d+)\)/i
 
-  const child = mirror(serial, {
+  const child = createMirrorProcess(serial, {
     ...options,
     args: commands,
     stdout: (data) => {
@@ -197,5 +208,6 @@ export default {
   helper,
   getAppList,
   getDisplayIds,
+  getCameraList,
   killProcesses,
 }

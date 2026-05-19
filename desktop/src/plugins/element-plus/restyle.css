@@ -182,3 +182,14 @@
     @apply !text-center;
   }
 }
+
+.el-radio-group.el-radio-group--block {
+  @apply flex;
+  .el-radio-button {
+    @apply flex-1 min-w-0;
+  }
+
+  .el-radio-button__inner {
+    @apply min-w-full text-center;
+  }
+}

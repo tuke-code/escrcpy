@@ -20,7 +20,7 @@ export default {
   props: {
     modelValue: {
       type: String,
-      value: '',
+      default: '',
     },
     data: {
       type: Object,

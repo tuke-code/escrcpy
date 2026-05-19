@@ -53,8 +53,10 @@ async function handleScrcpy(args) {
   loading.value = true
 
   const isCamera = ['--camera-facing'].some(key => args.includes(key))
-  if (isCamera)
+
+  if (isCamera) {
     args += ' --video-source=camera'
+  }
 
   toggleRowExpansion(row, true)
 

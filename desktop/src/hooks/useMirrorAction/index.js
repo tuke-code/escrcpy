@@ -31,9 +31,7 @@ export function useMirrorAction() {
   async function startMirror(item, options) {
     const deviceId = item?.id || item
 
-    const args = preferenceStore.scrcpyParameter(deviceId, {
-      excludes: ['--otg', '--mouse=aoa', '--keyboard=aoa'],
-    })
+    const args = preferenceStore.scrcpyParameter(deviceId)
 
     const mirroring = window.$preload.scrcpy.mirror(deviceId, {
       title: deviceStore.getLabel(deviceId, 'mirror'),

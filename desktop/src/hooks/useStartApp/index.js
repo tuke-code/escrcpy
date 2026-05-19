@@ -1,6 +1,7 @@
 import { quote } from 'shell-quote'
 import { mergeConfig } from '$/store/preference/helpers/index.js'
 import { getLaunchConfig } from '$/utils/launch/index.js'
+import * as displayHelper from '$/utils/device/display/index.js'
 
 export function useStartApp() {
   const deviceStore = useDeviceStore()
@@ -87,8 +88,9 @@ export function useStartApp() {
     return Number.parseInt(match[1], 10)
   }
 
-  async function resolveLandscapeDisplay(deviceId) {
-    const output = await window.$preload.adb.deviceShell(deviceId, 'wm size; wm density').catch(() => '')
+  async function resolveDeviceDisplay(id, options) {
+    const output = await window.$preload.adb.deviceShell(id, 'wm size; wm density').catch(() => '')
+
     const size = parseDisplaySize(output)
 
     if (!size) {
@@ -99,9 +101,12 @@ export function useStartApp() {
     const height = Math.min(size.width, size.height)
     const density = parseDisplayDensity(output)
 
-    return density
-      ? `${width}x${height}/${density}`
-      : `${width}x${height}`
+    return displayHelper.stringify({
+      width,
+      height,
+      density,
+      ...options,
+    })
   }
 
   async function resolveSecondaryUserActivity(deviceId, userId, packageName) {
@@ -172,12 +177,26 @@ export function useStartApp() {
     }
 
     const commands = preferenceStore.scrcpyParameter(mergedConfig, {
-      excludes: ['--otg', '--mouse=aoa', '--keyboard=aoa'],
+      excludes: ['--new-display'],
+      useLaunch: shouldCreateNewDisplay,
     })
 
-    const newDisplay = landscape && shouldCreateNewDisplay
-      ? await resolveLandscapeDisplay(deviceId)
-      : ''
+    let newDisplay = ''
+
+    if (shouldCreateNewDisplay) {
+      const mergedDisplay = mergedConfig['--new-display']
+
+      if (mergedDisplay) {
+        newDisplay = displayHelper.stringify({
+          ...displayHelper.parse(mergedDisplay),
+          // If the display is specified in the config, we assume it's already in the correct orientation, so we only apply the landscape option if it's explicitly set to true (not just truthy)
+          landscape: landscape || void 0,
+        })
+      }
+      else if (landscape) {
+        newDisplay = await resolveDeviceDisplay(deviceId, { landscape })
+      }
+    }
 
     return {
       title,

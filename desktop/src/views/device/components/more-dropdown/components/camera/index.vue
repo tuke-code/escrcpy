@@ -50,7 +50,7 @@ export default {
             '--stay-awake',
             '--show-touches',
           ],
-          isCamera: true,
+          useCamera: true,
         },
       )}`
 

@@ -6,7 +6,7 @@
     class="!w-72"
   >
     <template #prefix>
-      <el-tooltip class="" effect="dark" placement="bottom-start">
+      <el-tooltip class="" effect="light" placement="bottom-start">
         <el-icon class="text-primary-300 hover:text-primary-500">
           <QuestionFilled />
         </el-icon>

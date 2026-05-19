@@ -4,6 +4,7 @@ export default {
 
   children: {
     windowWidth: {
+      hidden: true,
       label: 'preferences.window.size.width',
       field: '--window-width',
       type: 'InputNumber',
@@ -12,6 +13,7 @@ export default {
       tips: 'preferences.window.size.width.tips',
     },
     windowHeight: {
+      hidden: true,
       label: 'preferences.window.size.height',
       field: '--window-height',
       type: 'InputNumber',
@@ -20,6 +22,7 @@ export default {
       tips: 'preferences.window.size.height.tips',
     },
     windowX: {
+      hidden: true,
       label: 'preferences.window.position.x',
       field: '--window-x',
       type: 'InputNumber',
@@ -27,6 +30,7 @@ export default {
       placeholder: 'preferences.window.position.x.placeholder',
     },
     windowY: {
+      hidden: true,
       label: 'preferences.window.position.y',
       field: '--window-y',
       type: 'InputNumber',
@@ -41,25 +45,32 @@ export default {
       placeholder: 'preferences.window.borderless.placeholder',
     },
     fullscreen: {
-      label: 'preferences.window.full-screen.name',
+      label: 'preferences.window.fullscreen.name',
       field: '--fullscreen',
       type: 'Switch',
       value: undefined,
-      placeholder: 'preferences.window.full-screen.placeholder',
+      placeholder: 'preferences.window.fullscreen.placeholder',
     },
     alwaysOnTop: {
-      label: 'preferences.window.always-top.name',
+      label: 'preferences.window.alwaysOnTop.name',
       field: '--always-on-top',
       type: 'Switch',
       value: undefined,
-      placeholder: 'preferences.window.always-top.placeholder',
+      placeholder: 'preferences.window.alwaysOnTop.placeholder',
     },
     disableScreensaver: {
-      label: 'preferences.window.disable-screen-saver.name',
+      label: 'preferences.window.disableScreensaver.name',
       field: '--disable-screensaver',
       type: 'Switch',
       value: undefined,
-      placeholder: 'preferences.window.disable-screen-saver.placeholder',
+      placeholder: 'preferences.window.disableScreensaver.placeholder',
+    },
+    backgroundColor: {
+      label: 'preferences.window.backgroundColor.name',
+      field: '--background-color',
+      type: 'ColorPicker',
+      value: undefined,
+      placeholder: 'preferences.window.backgroundColor.placeholder',
     },
   },
 }

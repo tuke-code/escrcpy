@@ -14,6 +14,11 @@ electronAPI.ipcRenderer.on('quit-before', async () => {
   })
 })
 
+function normalizeGnirehtetError(error) {
+  const message = error?.stderr || error?.message
+  throw new Error(message)
+}
+
 async function shell(command, options = {}) {
   const gnirehtetProcess = sheller(`gnirehtet ${command}`, {
     shell: true,
@@ -23,9 +28,12 @@ async function shell(command, options = {}) {
 
   processManager.add(gnirehtetProcess)
 
-  return gnirehtetProcess.catch((error) => {
-    const message = error?.stderr || error?.message
-    throw new Error(message)
+  const promise = gnirehtetProcess.catch(normalizeGnirehtetError)
+
+  return Object.assign(gnirehtetProcess, {
+    then: promise.then.bind(promise),
+    catch: promise.catch.bind(promise),
+    finally: promise.finally.bind(promise),
   })
 }
 

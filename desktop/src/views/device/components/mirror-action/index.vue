@@ -45,9 +45,7 @@ export default {
 
       this.toggleRowExpansion(row, true)
 
-      const args = this.preferenceStore.scrcpyParameter(row.id, {
-        excludes: ['--otg', '--mouse=aoa', '--keyboard=aoa'],
-      })
+      const args = this.preferenceStore.scrcpyParameter(row.id)
 
       try {
         const mirroring = this.$scrcpy.mirror(row.id, {

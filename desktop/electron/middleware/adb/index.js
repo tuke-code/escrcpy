@@ -48,6 +48,11 @@ electronStore.onDidChange('common.adbPath', async (...args) => {
   init()
 })
 
+function normalizeAdbError(error) {
+  const message = error?.stderr || error?.message
+  throw new Error(message)
+}
+
 async function shell(command) {
   const adbProcess = sheller(`adb ${command}`, {
     shell: true,
@@ -56,9 +61,12 @@ async function shell(command) {
 
   processManager.add(adbProcess)
 
-  return adbProcess.catch((error) => {
-    const message = error?.stderr || error?.message
-    throw new Error(message)
+  const promise = adbProcess.catch(normalizeAdbError)
+
+  return Object.assign(adbProcess, {
+    then: promise.then.bind(promise),
+    catch: promise.catch.bind(promise),
+    finally: promise.finally.bind(promise),
   })
 }
 

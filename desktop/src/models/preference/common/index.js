@@ -166,11 +166,11 @@ export default {
       },
     },
     autoConnect: {
-      label: 'preferences.common.auto-connect.name',
+      label: 'preferences.common.autoConnect.name',
       field: 'autoConnect',
       type: 'Switch',
       value: true,
-      placeholder: 'preferences.common.auto-connect.placeholder',
+      placeholder: 'preferences.common.autoConnect.placeholder',
     },
     autoMirror: {
       label: 'preferences.common.auto-mirror.name',
@@ -193,22 +193,6 @@ export default {
       value: undefined,
       placeholder: 'preferences.common.edgeHidden.placeholder',
       tips: 'preferences.common.edgeHidden.tips',
-    },
-    imeFix: {
-      label: 'preferences.common.imeFix.name',
-      field: 'imeFix',
-      type: 'Switch',
-      value: true,
-      placeholder: 'preferences.common.imeFix.placeholder',
-      tips: 'preferences.common.imeFix.tips',
-    },
-    noVdDestroyContent: {
-      label: 'preferences.common.noVdDestroyContent.name',
-      field: 'noVdDestroyContent',
-      type: 'Switch',
-      value: undefined,
-      placeholder: 'preferences.common.noVdDestroyContent.placeholder',
-      tips: 'preferences.common.noVdDestroyContent.tips',
     },
     debug: {
       label: 'preferences.common.debug.name',

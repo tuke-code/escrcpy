@@ -6,7 +6,7 @@
     }"
     v-model="selectValue"
     class="!w-full"
-    @click="getDeviceOptions"
+    @focus="getDeviceOptions"
   >
     <el-option
       v-for="(item, index) in options"
@@ -25,7 +25,7 @@ export default {
   props: {
     modelValue: {
       type: [String, Number],
-      value: void 0,
+      default: void 0,
     },
     data: {
       type: Object,
@@ -33,7 +33,7 @@ export default {
     },
     deviceScope: {
       type: String,
-      value: '',
+      default: '',
     },
     preferenceData: {
       type: Object,

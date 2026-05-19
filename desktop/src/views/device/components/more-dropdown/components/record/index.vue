@@ -72,16 +72,9 @@ export default {
       const savePath = this.getRecordPath(row)
 
       let args = this.preferenceStore.scrcpyParameter(row.id, {
-        isRecord: true,
-        isCamera: ['camera'].includes(this.recordType),
-        excludes: [
-          ...new Set([
-            '--otg',
-            '--mouse=aoa',
-            '--keyboard=aoa',
-            ...this.activeModel.excludes,
-          ]),
-        ],
+        useRecord: true,
+        useCamera: ['camera'].includes(this.recordType),
+        excludes: this.activeModel.excludes,
       })
 
       const commands = this.activeModel.commands || []
