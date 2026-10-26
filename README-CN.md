@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **我目前正在寻找新的工作机会。** 如果您有合适的机会，欢迎通过 [viarotel@foxmail.com](mailto:viarotel@foxmail.com) 与我联系。
+
 <div style="display:flex;">
   <img src="https://cdn.jsdelivr.net/gh/viarotel/resources@latest/logos/escrcpy.png" alt="viarotel-escrcpy" width="108px">
 </div>

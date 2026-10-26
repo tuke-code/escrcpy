@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **Сейчас я ищу новые карьерные возможности.** Если у вас есть подходящее предложение, свяжитесь со мной по адресу [viarotel@foxmail.com](mailto:viarotel@foxmail.com).
+
 <div style="display:flex;">
   <img src="https://cdn.jsdelivr.net/gh/viarotel/resources@latest/logos/escrcpy.png" alt="viarotel-escrcpy" width="108px">
 </div>
